@@ -5,10 +5,13 @@ const form = document.querySelector(".contact-form");
 const formCompleteInfo = document.querySelector(".form-complete");
 const formSubmitButton = form.querySelector('button[type="submit"]');
 
-document.getElementById("contact-button").addEventListener("click", () => {
-  modal.classList.add("active");
-  form.classList.add("active");
-  document.body.classList.add("no-scroll");
+document.querySelectorAll(".contact-button").forEach((element) => {
+  element.addEventListener("click", () => {
+    modal.classList.add("active");
+    form.classList.add("active");
+    console.log("clicked contact button");
+    document.body.classList.add("no-scroll");
+  });
 });
 document.querySelectorAll(".close-modal-button").forEach((button) => {
   button.addEventListener("click", () => {
@@ -77,6 +80,53 @@ createIcons({
     TextAlignJustify,
   },
 });
+
+/*------------------- mobile specific -------------------*/
+var mobileSpecificInfo = false;
+
+// side bar placement for different device widths
+if (window.innerWidth < 480) {
+  const directoryButtonContainer = document.querySelector(
+    ".directory-button-container",
+  );
+  directoryButtonContainer.appendChild(document.querySelector(".side-bar"));
+  directoryButtonContainer.style.display = "flex";
+  mobileSpecificInfo = true;
+
+  // mobile directory button functionality
+  const directoryOverlay = document.querySelector(".directory-overlay");
+  const directoryButton = document.querySelector(".directory-button");
+  const sidebar = document.querySelector(".side-bar");
+  const buttonSpacer = document.querySelector(".button-spacer");
+
+  directoryButton.addEventListener("click", (event) => {
+    if (sidebar.style.display === "block") {
+      closeDirectory();
+    } else {
+      directoryOverlay.classList.add("active");
+      document.body.classList.add("no-scroll");
+      sidebar.style.display = "block";
+      directoryButton.classList.add("directory-button-open");
+      buttonSpacer.style.display = "block";
+    }
+  });
+
+  directoryOverlay.addEventListener("click", (event) => {
+    if (event.target === directoryOverlay) {
+      closeDirectory();
+    }
+  });
+
+  function closeDirectory() {
+    directoryOverlay.classList.remove("active");
+    sidebar.style.display = "none";
+    directoryButton.classList.remove("directory-button-open");
+    document.body.classList.remove("no-scroll");
+    buttonSpacer.style.display = "none";
+  }
+} else {
+  document.querySelector(".directory-button-container").style.display = "none";
+}
 
 /*------------------- main content management -------------------*/
 
@@ -378,6 +428,31 @@ function loadSection(sectionName) {
   currentSectionName = sectionName; // for gallery width function to access
   const section = sections[sectionName];
 
+  // mobile layout exception for Info page
+  if (section.title == "Info" && mobileSpecificInfo) {
+    document.body.classList.add("mobile-exception");
+    document.querySelectorAll(".mobile-info-only").forEach((element) => {
+      element.style.display = "flex";
+    });
+  } else {
+    document.body.classList.remove("mobile-exception");
+    document.querySelectorAll(".mobile-info-only").forEach((element) => {
+      element.style.display = "none";
+    });
+  }
+
+  // on mobile, copyright only includes site attribution on info page
+  const copyright = document.querySelector(".copyright");
+  if (mobileSpecificInfo) {
+    if (section.title == "Info") {
+      copyright.textContent = "© 2026 Nat Ware --- site by JS";
+    } else {
+      copyright.textContent = "© 2026 Nat Ware";
+    }
+  } else {
+    copyright.textContent = "© 2026 Nat Ware --- site by JS";
+  }
+
   // set title
   title.textContent = section.title;
   // set subtitle
@@ -519,13 +594,6 @@ arrowWrappers[1].onclick = function () {
   galleryDisplay.scrollLeft += galleryDisplay.offsetWidth;
 };
 
-// side bar placement for different device widths
-if (window.innerWidth < 480) {
-  document
-    .querySelector(".directory-button-wrapper")
-    .appendChild(document.querySelector(".side-bar"));
-}
-
 // side bar buttons
 document.querySelectorAll(".clickable").forEach((element) => {
   element.addEventListener("click", () => {
@@ -538,14 +606,20 @@ document.querySelectorAll(".clickable").forEach((element) => {
   });
 });
 
-// mobile directory button
-document.querySelector(".directory-button").addEventListener("click", () => {
-  const sidebar = document.querySelector(".side-bar");
-  if (sidebar.style.display === "block") {
-    sidebar.style.display = "none";
-  } else {
-    sidebar.style.display = "block";
-  }
-});
-
 loadSection(currentSectionName);
+
+/*
+ implement this once I have the mobile version in a nice spot...
+const mobileQuery = window.matchMedia("(max-width: 479px)");
+
+function setupMobileLayout(e) {
+  if (e.matches) {
+    // move sidebar into directory button, wire up toggle
+  } else {
+    // move it back / tear down listeners if needed
+  }
+}
+
+mobileQuery.addEventListener("change", setupMobileLayout);
+setupMobileLayout(mobileQuery); // run once on load too
+*/
