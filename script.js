@@ -83,6 +83,12 @@ createIcons({
 /*------------------- mobile specific -------------------*/
 var mobileSpecificInfo = false;
 
+// mobile directory button functionality
+const directoryOverlay = document.querySelector(".directory-overlay");
+const directoryButton = document.querySelector(".directory-button");
+const sidebar = document.querySelector(".side-bar");
+const buttonSpacer = document.querySelector(".button-spacer");
+
 // side bar placement for different device widths
 if (window.innerWidth < 840) {
   const directoryButtonContainer = document.querySelector(
@@ -91,12 +97,6 @@ if (window.innerWidth < 840) {
   directoryButtonContainer.appendChild(document.querySelector(".side-bar"));
   directoryButtonContainer.style.display = "flex";
   mobileSpecificInfo = true;
-
-  // mobile directory button functionality
-  const directoryOverlay = document.querySelector(".directory-overlay");
-  const directoryButton = document.querySelector(".directory-button");
-  const sidebar = document.querySelector(".side-bar");
-  const buttonSpacer = document.querySelector(".button-spacer");
 
   directoryButton.addEventListener("click", (event) => {
     if (sidebar.style.display === "block") {
@@ -115,16 +115,16 @@ if (window.innerWidth < 840) {
       closeDirectory();
     }
   });
-
-  function closeDirectory() {
-    directoryOverlay.classList.remove("active");
-    sidebar.style.display = "none";
-    directoryButton.classList.remove("directory-button-open");
-    document.body.classList.remove("no-scroll");
-    buttonSpacer.style.display = "none";
-  }
 } else {
   document.querySelector(".directory-button-container").style.display = "none";
+}
+
+function closeDirectory() {
+  directoryOverlay.classList.remove("active");
+  sidebar.style.display = "none";
+  directoryButton.classList.remove("directory-button-open");
+  document.body.classList.remove("no-scroll");
+  buttonSpacer.style.display = "none";
 }
 
 /*------------------- main content management -------------------*/
@@ -478,15 +478,22 @@ function loadSection(sectionName) {
     mainImage.src = "";
     mainImage.style.display = "none";
     galleryContainer.style.display = "none";
-    visualsContainer.style.display = "flex";
+
     verticalGallery.innerHTML = "";
 
-    section.images.forEach((image, index) => {
-      const img = document.createElement("img");
-      img.src = "images/" + section.folder + image;
-      img.classList.add("stacked-img");
-      verticalGallery.appendChild(img);
-    });
+    if (section.images.length < 1) {
+      visualsContainer.style.display = "none";
+      description.classList.add("grow");
+    } else {
+      visualsContainer.style.display = "flex";
+      description.classList.remove("grow");
+      section.images.forEach((image, index) => {
+        const img = document.createElement("img");
+        img.src = "images/" + section.folder + image;
+        img.classList.add("stacked-img");
+        verticalGallery.appendChild(img);
+      });
+    }
     return;
   }
   galleryDisplay.innerHTML = "";
@@ -605,6 +612,9 @@ document.querySelectorAll(".clickable").forEach((element) => {
     document.querySelectorAll(".clickable").forEach((deselectedElement) => {
       deselectedElement.classList.remove("selected");
     });
+    if (mobileSpecificInfo) {
+      closeDirectory();
+    }
     element.classList.add("selected");
     loadSection(element.textContent.trim());
   });
