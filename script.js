@@ -483,10 +483,8 @@ function loadSection(sectionName) {
 
     if (section.images.length < 1) {
       visualsContainer.style.display = "none";
-      description.classList.add("grow");
     } else {
       visualsContainer.style.display = "flex";
-      description.classList.remove("grow");
       section.images.forEach((image, index) => {
         const img = document.createElement("img");
         img.src = "images/" + section.folder + image;

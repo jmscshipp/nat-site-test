@@ -428,12 +428,20 @@ textarea {
 
   #main-page-content {
     flex-direction: column-reverse;
+    justify-content: flex-end;
+    background-color: orange;
+  }
+
+  #main-page-content .mobile-info-only {
+    flex: 0 0 auto;
+    margin: 0 -100px;
   }
 
   #description {
     width: 100%;
     min-width: 0;
     margin-bottom: 24px;
+    background-color: cyan;
   }
 
   .directory-button {
