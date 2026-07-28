@@ -429,6 +429,7 @@ textarea {
 
   #main-page-content {
     flex-direction: column-reverse;
+    margin-bottom: -100px;
   }
 
   #description {
