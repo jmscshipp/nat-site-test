@@ -416,6 +416,7 @@ const subtitle = document.getElementById("subtitle");
 const container = document.getElementById("container");
 const description = document.getElementById("description");
 const visualsContainer = document.getElementById("visuals-container");
+const spacer = document.getElementById("spacer");
 const mainImage = document.getElementById("main-img");
 const galleryDisplay = document.getElementById("gallery-display");
 const galleryContainer = document.getElementById("gallery-container");
@@ -433,11 +434,15 @@ function loadSection(sectionName) {
     document.querySelectorAll(".mobile-info-only").forEach((element) => {
       element.style.display = "flex";
     });
+    spacer.style.display = "block";
+    document.body.classList.add("no-scroll");
   } else {
     document.body.classList.remove("mobile-exception");
     document.querySelectorAll(".mobile-info-only").forEach((element) => {
       element.style.display = "none";
     });
+    spacer.style.display = "none";
+    document.body.classList.remove("no-scroll");
   }
 
   // on mobile, copyright only includes site attribution on info page
